@@ -1,0 +1,18 @@
+version: '3.6'
+
+services:
+  etl:
+    build:
+      context: .\..\etl\
+      dockerfile: .\..\docker\dockerfile
+    #Use this instead of below if shell access is required: command: tail -f /dev/null
+    command: pipenv run python extract_data.py
+    image: transport_etl
+    secrets:
+        - db_credentials.yaml
+
+#Remember to add a complete credentials file to the below location
+#Also rememeber to make sure it is not committed!
+secrets:
+    db_credentials.yaml:
+        file: .\..\config\db_credentials.yaml

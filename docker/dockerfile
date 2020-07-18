@@ -1,0 +1,23 @@
+FROM python:3.8.3-buster
+
+RUN apt-get update --yes \
+    && apt-get install unixodbc-dev --yes \
+    && pip install pipenv
+
+#install odbc
+#https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-2017#debian17
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update --yes \
+    && ACCEPT_EULA=Y apt-get install msodbcsql17 --yes
+
+WORKDIR /home/app/
+
+
+COPY Pipfile.lock ./
+
+RUN pipenv install --ignore-pipfile  
+
+COPY extract_data.py ./
+
+#CMD ["pipenv", "run", "python", "extract_data.py"]
