@@ -1,7 +1,12 @@
 # transport-infrastructure-etl
 
 
-## Building the docker image
+## Running the script
 
-1. Change directory to the /etl directory
-2. Run the following command: docker biuld -t  transport_etl -f ./..container/Dockerfile .
+The following instructions assume you have docker and docker-compose installed.
+
+The first 
+
+1. Create a database credentials file within the /config directory as per instrunctions in db_credentials.yaml_example.
+2. Change directory to the /docker directory
+3. Run: docker-compose up
