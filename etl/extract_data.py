@@ -2,6 +2,7 @@
 import os
 import time
 from datetime import datetime, timedelta
+from sys import platform
 
 import csv
 import codecs
@@ -9,19 +10,24 @@ import requests
 import yaml
 import pyodbc 
 
+from aws_functions import get_secret
+
+
+#obtain DB credentials from the AWS secrets manager
+secret = eval(get_secret())
+
 #extract the name of the directory that this file is located in, regardless of the current working directory.
 script_dir = os.path.dirname(__file__)
 
-filename_yaml = os.path.join('/run', 'secrets','db_credentials.yaml')
 
-with open(filename_yaml) as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-
-driver = config[config['destination']]['driver']
-server = config[config['destination']]['server']
-database = config[config['destination']]['database']
-user = config[config['destination']]['user']
-password = config[config['destination']]['password']
+if platform == "linux": 
+    driver= "{/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.5.so.2.1}"
+elif platform == "win32":
+    driver= "{SQL Server}"
+server = "traffic-db-sqlserver.c0s0xrpsinuo.eu-west-1.rds.amazonaws.com"
+database = "traffic"
+user = secret["username"]
+password = secret["password"]
 
 conn = pyodbc.connect("Driver=" + driver + ";"
                       "Server=" + server + ";"
@@ -35,7 +41,7 @@ yesterday_format2  = datetime.strftime(datetime.now() - timedelta(1), '%Y-%m-%d'
 
 download_day_format1 = yesterday_format1
 download_day_format2 = yesterday_format2
-print("Downlaod day:" , download_day_format1)
+print("Download day:" , download_day_format1)
 
 x = "https://data.tii.ie/Datasets/TrafficCountData/" + download_day_format1 + "/per-site-class-aggr-" + download_day_format2 + ".csv"
 
@@ -66,4 +72,6 @@ t0 = time.time()
 cursor_desc.executemany(sql, params)
 conn.commit()
 print(f'{time.time() - t0:.1f} seconds')
+
+
 

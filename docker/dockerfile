@@ -11,13 +11,19 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && apt-get update --yes \
     && ACCEPT_EULA=Y apt-get install msodbcsql17 --yes
 
-WORKDIR /home/app/
+#Install the AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install
 
+
+WORKDIR /home/app/
 
 COPY Pipfile.lock ./
 
 RUN pipenv install --ignore-pipfile  
 
+COPY aws_functions.py ./
 COPY extract_data.py ./
 
 #CMD ["pipenv", "run", "python", "extract_data.py"]

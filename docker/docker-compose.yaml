@@ -5,11 +5,16 @@ services:
     build:
       context: .\..\etl\
       dockerfile: .\..\docker\dockerfile
-    #Use this instead of below if shell access is required: command: tail -f /dev/null
-    command: pipenv run python extract_data.py
+    #Use this instead of below if shell access is required: 
+    command: tail -f /dev/null
+    #command: pipenv run python extract_data.py
     image: transport_etl
-    secrets:
-        - db_credentials.yaml
+    #secrets:
+    #    - db_credentials.yaml
+    volumes:
+        - type: bind
+          source: C:\Users\foboyle\.aws
+          target: /root/.aws
 
 #Remember to add a complete credentials file to the below location
 #Also rememeber to make sure it is not committed!
