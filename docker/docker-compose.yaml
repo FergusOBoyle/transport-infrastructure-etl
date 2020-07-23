@@ -8,7 +8,7 @@ services:
     #Use this instead of below if shell access is required: 
     command: tail -f /dev/null
     #command: pipenv run python extract_data.py
-    image: transport_etl
+    image: traffic_etl
     #secrets:
     #    - db_credentials.yaml
     volumes:

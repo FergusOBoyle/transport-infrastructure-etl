@@ -1,0 +1,8 @@
+version: '3.6'
+
+services:
+  etl:
+    #command: tail -f /dev/null
+    command: pipenv run python extract_data.py
+    image: 157782876633.dkr.ecr.eu-west-1.amazonaws.com/traffic_etl:latest
+
